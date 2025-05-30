@@ -12,6 +12,7 @@ import org.springframework.web.servlet.mvc.method.annotation.SseEmitter;
 @RestController
 @RequestMapping
 @RequiredArgsConstructor
+@CrossOrigin(origins = "http://localhost:3000")
 public class SseController {
     private final SseService sseService;
     private final Logger logger = org.slf4j.LoggerFactory.getLogger(SseController.class);
