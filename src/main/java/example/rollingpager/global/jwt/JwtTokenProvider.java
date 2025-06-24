@@ -41,10 +41,10 @@ public class JwtTokenProvider {
         logger.info("JwtTokenProvider : init() 실행 - secretKey 초기화 완료");
     }
 
-    public String createRefresh(String nickName, List<String> roles) {
+    public String createRefresh(String userID, List<String> roles) {
         logger.info("JwtTokenProvider : createRefresh() 실행 - 리프레쉬 토큰 생성 시작");
 
-        Claims claims = Jwts.claims().setSubject(nickName);
+        Claims claims = Jwts.claims().setSubject(userID);
         claims.put("roles", roles);
         Date now = new Date();
 
@@ -60,11 +60,11 @@ public class JwtTokenProvider {
         return token;
     }
 
-    public String createAccess(String nickName, List<String> roles) {
+    public String createAccess(String userID, List<String> roles) {
         logger.info("JwtTokenProvider : createAccess() 실행 - 액세스 토큰 생성 시작");
 
         Date now = new Date();
-        Claims claims = Jwts.claims().setSubject(nickName);
+        Claims claims = Jwts.claims().setSubject(userID);
         claims.put("roles", roles);
 
         String token = Jwts.builder()
@@ -76,21 +76,21 @@ public class JwtTokenProvider {
         logger.info("JwtTokenProvider : createAccess() 실행 - 액세스 토큰 생성 완료");
         return token;
     }
-    public String getNickname(String token) {
-        logger.info("JwtTokenProvider : getUsername() 실행 - 토큰으로부터 유저 정보 가져오기 시작");
+    public String getUserID(String token) {
+        logger.info("JwtTokenProvider : getUserID() 실행 - 토큰으로부터 유저 정보 가져오기 시작");
         String info = Jwts.parserBuilder()
                 .setSigningKey(key)
                 .build()
                 .parseClaimsJws(token)
                 .getBody()
                 .getSubject();
-        logger.info("JwtTokenProvider : getUsername() 실행 - 토큰으로부터 유저 정보 가져오기 완료");
+        logger.info("JwtTokenProvider : getUserID() 실행 - 토큰으로부터 유저 정보 가져오기 완료");
         return info;
     }
 
     public Authentication getAuthentication(String token) {
         logger.info("JwtTokenProvider : getAuthentication() 실행 - 토큰으로부터 인증 정보 가져오기 시작");
-        UserDetails userDetails = userDetailsService.loadUserByNickname(this.getNickname(token));
+        UserDetails userDetails = userDetailsService.loadUserByUserID(this.getUserID(token));
 
         logger.info("JwtTokenProvider : getAuthentication() 실행 - 토큰으로부터 인증 정보 가져오기 완료");
         return new UsernamePasswordAuthenticationToken(userDetails, "", userDetails.getAuthorities());
