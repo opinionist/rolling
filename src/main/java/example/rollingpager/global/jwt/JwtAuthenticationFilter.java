@@ -21,6 +21,11 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
     @Override
     protected void doFilterInternal(HttpServletRequest servletRequest, HttpServletResponse servletResponse, FilterChain filterChain) throws ServletException, IOException {
         String token = jwtTokenProvider.resolveToken(servletRequest);
+        String path = servletRequest.getRequestURI();
+        if (path.startsWith("/sse")) {
+            filterChain.doFilter(servletRequest, servletResponse);  // SSE 요청은 필터 건너뜀
+            return;
+        }
         logger.info("JwtAuthenticationFilter : doFilterInternal() 실행 - token 값 추출 완료. token: {}", token);
 
         logger.info("JwtAuthenticationFilter : doFilterInternal() 실행 - token 값 유효성 체크 시작");

@@ -14,7 +14,6 @@ import org.springframework.web.bind.annotation.*;
 @RestController
 @RequestMapping("/rolling-paper")
 @RequiredArgsConstructor
-@CrossOrigin(origins = "http://localhost:3000")
 public class RollingPaperController {
     private final RollingPaperService rollingPaperService;
     private final Logger logger = LoggerFactory.getLogger(RollingPaperController.class);

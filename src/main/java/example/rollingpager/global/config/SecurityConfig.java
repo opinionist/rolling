@@ -71,6 +71,14 @@ public class SecurityConfig {
                         .accessDeniedHandler(new CustomAccessDeniedHandler())// 권한이 없는 경우
                 )
                 .addFilterBefore(new JwtAuthenticationFilter(jwtTokenProvider), UsernamePasswordAuthenticationFilter.class)
+                .cors(cors -> cors.configurationSource(request -> {
+                    var corsConfig = new org.springframework.web.cors.CorsConfiguration();
+                    corsConfig.addAllowedOrigin("http://localhost:3000"); // 허용할 프론트 도메인
+                    corsConfig.addAllowedMethod("*");
+                    corsConfig.addAllowedHeader("*");
+                    corsConfig.setAllowCredentials(true);
+                    return corsConfig;
+                }))
         ;
 
         return httpSecurity.build();
