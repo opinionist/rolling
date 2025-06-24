@@ -98,6 +98,27 @@ public class RollingPaperServiceImpl implements RollingPaperService {
                 .build();
     }
 
+    public List<GetDto> getAll() {
+        List<RollingPaper> rollingPapers = rollingPaperRepository.findRandomPapers();
+        List<GetDto> getDtos = new ArrayList<>();
+        for (RollingPaper rollingPaper : rollingPapers) {
+            List<Paper> papers = paperRepository.findByRollingPaper(rollingPaper);
+            List<PaperDto> paperDtos = new ArrayList<>();
+            for (Paper paper : papers) {
+                paperDtos.add(PaperDto.builder()
+                        .sender(paper.getSender())
+                        .content(paper.getContent())
+                        .build());
+            }
+            getDtos.add(GetDto.builder()
+                    .url(rollingPaper.getUrl())
+                    .recipient(rollingPaper.getRecipient())
+                    .papers(paperDtos)
+                    .finished(rollingPaper.isFinished())
+                    .build());
+        }
+        return getDtos;
+    }
     private RollingPaper getPaperByURL(String url){
         return rollingPaperRepository.findByUrlAndFinishedFalse(url).orElseThrow(()-> new IllegalArgumentException("존재 하지 않거나, 이미 완료된 URL입니다."));
     }

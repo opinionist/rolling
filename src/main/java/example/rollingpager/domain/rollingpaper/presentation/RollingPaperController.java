@@ -41,4 +41,9 @@ public class RollingPaperController {
         logger.info(page);
         return ResponseEntity.ok(rollingPaperService.get(page));
     }
+
+    @GetMapping
+    public ResponseEntity<?> rollingPaperList() {
+        return ResponseEntity.ok(rollingPaperService.getAll());
+    }
 }
